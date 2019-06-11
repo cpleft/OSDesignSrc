@@ -1,9 +1,9 @@
-#include<linux/kernel.h>        /* open(), release() */
+#include<linux/kernel.h>                    /* open(), release() */
 #include<linux/init.h>
-#include<linux/fs.h>            /* ioctl(), read(), write() */
+#include<linux/fs.h>                        /* ioctl(), read(), write() */
 #include<linux/module.h>
-#include<linux/slab.h>          /* kmalloc(), kfree() */
-#include<linux/uaccess.h>	/* copy_to_user(), copy_from_user() */
+#include<linux/slab.h>                      /* kmalloc(), kfree() */
+#include<linux/uaccess.h>					/* copy_to_user(), copy_from_user() */
 
 #define  YY_MAJOR       98
 #define  VERSION        "yy_drv_lab1"
@@ -17,7 +17,7 @@ struct yy_contain
 };
 struct yy_contain* yy_cp = NULL;
 
-void showVersion()
+void showVersion(void)
 {
     printk("****************************\n");
     printk("\t%s\t\n", VERSION);
@@ -150,7 +150,7 @@ struct file_operations yy_f_ops = {
 };
 
 /* yy_drv init */
-static int yy_init()
+static int yy_init(void)
 {
     int ret = -1;
     ret = register_chrdev(YY_MAJOR, VERSION, &yy_f_ops);
@@ -167,7 +167,7 @@ static int yy_init()
 }
 
 /* yy_drv exit */
-static void yy_exit()
+static void yy_exit(void)
 {
     printk("cleanup yy_drv[--kernel--]\n");	
     unregister_chrdev(YY_MAJOR, VERSION);
