@@ -8,9 +8,9 @@
 #include<linux/seq_file.h>      
 #include<linux/proc_fs.h>     	/* proc_create(), remove_proc_entry() */
 
-#define VERSION "yy_drv_lab2"
-#define PROC_NAME "yy_proc"
-#define MAX_SIZE 1024
+#define VERSION     "yy_drv_lab2"
+#define PROC_NAME   "yy_proc"
+#define MAX_SIZE    1024
 
 static struct yy_proc_data {
     char buf[MAX_SIZE];
