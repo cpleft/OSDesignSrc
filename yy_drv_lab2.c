@@ -12,8 +12,8 @@
 #define PROC_NAME   "yy_proc"
 #define MAX_SIZE    1024
 
-static size_t n = MAX_SIZE;
-module_param(n, size_t, 0);
+static int n = MAX_SIZE;
+module_param(n, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(n, "size of kernel data buffer.");
 
 static struct yy_proc_data {
@@ -28,29 +28,48 @@ static void* yy_seq_start(struct seq_file* sfp, loff_t* pos)
 {
     printk("yy_seq_start[--kernel--]\n");
 
-    *pos = 0;
-    return head;
+    struct yy_proc_data* tmp = head;
+    int index = *pos;
+
+    if (!*pos)
+        return head;
+    while (index--)
+    {
+        if (!tmp)
+            return NULL;
+        tmp = tmp->next;
+    }
+    return tmp;
 }
 
 static void* yy_seq_next(struct seq_file* sfp, void* v, loff_t* pos)
 {
     printk("yy_seq_next[--kernel--]\n");
+    struct yy_proc_data* tmp = (struct yy_proc_data*)v;
 
-    return v->next;
+    *pos = *pos + 1;
+    tmp = tmp->next;
+    
+    if (!tmp)
+        return NULL;
+
+    return tmp;
 }
 
 static void yy_seq_show(struct seq_file* sfp, void* v)
 {
     printk("yy_seq_show[--kernel--]\n");
-
+    
     if (v == NULL)
         return;
+    struct yy_proc_data* tmp = (struct yy_proc_data*)v;
 
-    seq_printf("%s(yy_seq_show)\n", v->buf);
+    seq_printf(sfp, "%s(yy_seq_show)\n", tmp->buf);
 }
 
 static void yy_seq_stop(struct seq_file* sfp, void* v)
 {
+    printk("ct_seq_stop!\n");
     return;
 }
 
@@ -137,12 +156,12 @@ static int yy_init(void)
     }
 
     head = yy_proc_data_new;
+    tail = yy_proc_data_new;
 
-    yy_proc_data_new->buf[] = {
-        "hello, I'm from kernel space initialed in yy_init(void).\n"};
+	strcpy(yy_proc_data_new->buf, "first data initialed in init().\n");
     yy_proc_data_new->next = NULL;
 
-    tail = yy_proc_data_new;
+    
     return 0;
 }
 
