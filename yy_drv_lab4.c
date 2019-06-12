@@ -3,7 +3,7 @@
 #include<linux/fs.h>            /* ioctl(), read(), write() */
 #include<linux/module.h>
 #include<linux/slab.h>          /* kmalloc(), kfree() */
-#include<linux/uaccess.h>	/* copy_to_user(), copy_from_user() */
+#include<linux/uaccess.h>		/* copy_to_user(), copy_from_user() */
 #include<linux/mm.h>
 
 #define  YY_MAJOR       98
@@ -12,10 +12,17 @@
 
 static unsigned long ADDRESS;
 
+void showVersion(void)
+{
+    printk("****************************\n");
+    printk("\t%s\t\n", VERSION);
+    printk("****************************\n");
+}
+
 static void yy_vma_open(struct vm_area_struct* vma)
 {
     printk("Simple VMA open, virt %lx, phys %lx\n", 
-            vma->vm_start, vma->vm_pgoff << PAGE_SHIFT)
+            vma->vm_start, vma->vm_pgoff << PAGE_SHIFT);
 }
 
 static void yy_vma_close(struct vm_area_struct* vma)
@@ -56,7 +63,7 @@ static int yy_fault_mmap(struct file* fp,
     {
         vma->vm_flags |= VM_IO;
     }
-    vma->vm_flags |= VM_RESERVED;
+    vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
     vma->vm_ops = &yy_vmops;
     yy_vma_open(vma);
     return 0;
@@ -81,7 +88,7 @@ static struct file_operations yy_fops = {
     .mmap = yy_fault_mmap
 };
 
-static int yy_init()
+static int yy_init(void)
 {
     int ret = -1;
     ret = register_chrdev(YY_MAJOR, VERSION, &yy_fops);
@@ -104,7 +111,7 @@ static int yy_init()
 }
 
 /* yy_drv exit */
-static void yy_exit()
+static void yy_exit(void)
 {
     free_pages(ADDRESS, get_order(65535));
     unregister_chrdev(YY_MAJOR, VERSION);

@@ -168,7 +168,7 @@ static int _seq_show(struct seq_file* seq_fp, void* np)
 
 
 /* yy_drv init */
-static int yy_init()
+static int yy_init(void)
 {
     int ret = -1;
     ret = register_chrdev(YY_MAJOR, VERSION, &yy_f_ops);
@@ -208,7 +208,7 @@ static int yy_init()
 }
 
 /* yy_drv exit */
-static void yy_exit()
+static void yy_exit(void)
 {
     printk("cleanup yy_drv[--kernel--]\n");	
     
