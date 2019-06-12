@@ -3,7 +3,7 @@
 #include<linux/fs.h>            /* ioctl(), read(), write() */
 #include<linux/module.h>
 #include<linux/slab.h>          /* kmalloc(), kfree() */
-#include<linux/uaccess.h>		/* copy_to_user(), copy_from_user() */
+#include<linux/uaccess.h>	/* copy_to_user(), copy_from_user() */
 #include<linux/interrupt.h>     /* tasklet_struct */
 #include<linux/timer.h>
 #include<linux/time.h>

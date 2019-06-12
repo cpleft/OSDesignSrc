@@ -12,6 +12,10 @@
 #define PROC_NAME   "yy_proc"
 #define MAX_SIZE    1024
 
+static size_t n = MAX_SIZE;
+module_param(n, size_t, 0);
+MODULE_PARM_DESC(n, "size of kernel data buffer.");
+
 static struct yy_proc_data {
     char buf[MAX_SIZE];
     struct yy_proc_data* next;
@@ -78,8 +82,8 @@ static ssize_t yy_write(
     }
 
     int write_size = count;
-    if (count > MAX_SIZE)
-        write_size = MAX_SIZE;
+    if (count > n)
+        write_size = n;
 
     if(copy_from_user(yy_proc_data_new->buf, buf, write_size) == 0)
     {
